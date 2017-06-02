@@ -1,0 +1,180 @@
+version: "2"
+services:
+
+  membersrvc:
+    build:
+      context: ./envoy-membersrvc
+      dockerfile: Dockerfile
+    ports:
+      - "7054:37054"
+    networks:
+      envoymesh:
+        aliases:
+          - membersrvc
+    container_name: membersrvc
+    environment:
+    - CORE_PEER_ID=membersrvc
+
+  vp0:
+    build:
+      context: ./envoy-vp0
+      dockerfile: Dockerfile
+    extends:
+      file: base/peer-secure-pbft-base.yaml
+      service: peer-secure-pbft-base
+    environment:
+      - CORE_PEER_ID=vp0
+      - CORE_SECURITY_ENROLLID=test_vp0
+      - CORE_SECURITY_ENROLLSECRET=MwYpmSRjupbT
+    #  - CORE_VM_ENDPOINT=vp0:2376
+    ports:
+      - "7050:37050"
+    networks:
+      envoymesh:
+        aliases:
+          - vp0
+    links:
+      - membersrvc
+    container_name: vp0
+    depends_on:
+      - membersrvc
+
+  vp1:
+    build:
+      context: ./envoy-vp1
+      dockerfile: Dockerfile
+    extends:
+      file: base/peer-secure-pbft-base.yaml
+      service: peer-secure-pbft-base
+    environment:
+      - CORE_PEER_DISCOVERY_ROOTNODE=vp0:37051
+      - CORE_PEER_ID=vp1
+      - CORE_SECURITY_ENROLLID=test_vp1
+      - CORE_SECURITY_ENROLLSECRET=5wgHK9qqYaPy
+      #- CORE_VM_ENDPOINT=vp1:2376
+    networks:
+      envoymesh:
+        aliases:
+          - vp1
+    links:
+      - membersrvc
+      - vp0
+    container_name: vp1
+    depends_on:
+      - vp0
+      - membersrvc
+
+  vp2:
+    build:
+      context: ./envoy-vp2
+      dockerfile: Dockerfile
+    extends:
+      file: base/peer-secure-pbft-base.yaml
+      service: peer-secure-pbft-base
+    environment:
+      - CORE_PEER_DISCOVERY_ROOTNODE=vp0:37051
+      - CORE_PEER_ID=vp2
+      - CORE_SECURITY_ENROLLID=test_vp2
+      - CORE_SECURITY_ENROLLSECRET=vQelbRvja7cJ
+      #- CORE_VM_ENDPOINT=vp2:2376
+    networks:
+      envoymesh:
+        aliases:
+          - vp2
+    links:
+      - membersrvc
+      - vp0
+    container_name: vp2
+    depends_on:
+      - vp0
+      - membersrvc
+  vp3:
+    build:
+      context: ./envoy-vp3
+      dockerfile: Dockerfile
+    extends:
+      file: base/peer-secure-pbft-base.yaml
+      service: peer-secure-pbft-base
+    environment:
+      - CORE_PEER_DISCOVERY_ROOTNODE=vp0:37051
+      - CORE_PEER_ID=vp3
+      - CORE_SECURITY_ENROLLID=test_vp3
+      - CORE_SECURITY_ENROLLSECRET=9LKqKH5peurL
+      #- CORE_VM_ENDPOINT=vp3:2376
+
+    networks:
+      envoymesh:
+        aliases:
+          - vp3
+    links:
+      - membersrvc
+      - vp0
+    container_name: vp3
+    depends_on:
+      - vp0
+      - membersrvc
+
+  # blockchain-explorer
+  explorer:
+    extends:
+      file: explorer.yml
+      service: explorer
+    hostname: explorer
+    container_name: explorer
+    environment:
+      - HYP_REST_ENDPOINT=http://vp0:37050
+    networks:
+      envoymesh:
+        aliases:
+          - explorer
+    ports:
+      - "9090:9090"
+    depends_on:
+      - vp0
+      - membersrvc
+  demo:
+    #image: magg/demo-node
+    build:
+      context: .
+      dockerfile: node.dockerfile
+    links:
+      - vp0
+      - membersrvc
+    depends_on:
+      - vp0
+      - membersrvc
+    networks:
+      envoymesh:
+        aliases:
+          - demo
+    ports:
+      - "8080:80"
+    container_name: demo
+
+  zipkin:
+    image: openzipkin/zipkin
+    networks:
+      envoymesh:
+        aliases:
+          - zipkin
+    expose:
+      - "9411"
+    ports:
+      - "9411:9411"
+
+networks:
+  envoymesh: {}
+
+
+
+#networks:
+#  default:
+#    external:
+#      name: fabric_pbft
+
+
+
+#networks:
+#  default:
+#    external:
+#      name: fabric_pbft
