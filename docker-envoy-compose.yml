@@ -132,24 +132,6 @@ services:
     depends_on:
       - vp0
       - membersrvc
-  demo:
-    #image: magg/demo-node
-    build:
-      context: .
-      dockerfile: node.dockerfile
-    links:
-      - vp0
-      - membersrvc
-    depends_on:
-      - vp0
-      - membersrvc
-    networks:
-      envoymesh:
-        aliases:
-          - demo
-    ports:
-      - "8080:80"
-    container_name: demo
 
   zipkin:
     image: openzipkin/zipkin

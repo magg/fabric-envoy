@@ -1,0 +1,796 @@
+{
+  "listeners": [
+
+    {
+      "address": "tcp://0.0.0.0:9000",
+      "filters": [
+        {
+          "type": "read",
+          "name": "http_connection_manager",
+          "config": {
+            "generate_request_id": true,
+            "tracing": {
+              "operation_name": "egress"
+            },
+            "codec_type": "auto",
+            "stat_prefix": "egress_http",
+            "route_config": {
+              "virtual_hosts": [
+                {
+                  "name": "vp0",
+                  "domains": ["*"],
+                  "routes": [
+                    {
+                      "timeout_ms": 0,
+                      "prefix": "/",
+                      "cluster": "vp0_rest"
+                    }
+                  ]
+                }
+              ]
+            },
+            "filters": [
+              {
+                "type": "decoder",
+                "name": "router",
+                "config": {}
+              }
+            ]
+          }
+        }
+      ]
+},
+{
+  "address": "tcp://0.0.0.0:9001",
+  "filters": [
+
+{
+  "type": "read",
+  "name": "http_connection_manager",
+  "config": {
+    "generate_request_id": true,
+    "add_user_agent": true,
+     "tracing": {
+       "operation_name": "egress"
+     },
+    "codec_type": "auto",
+    "stat_prefix": "egress_http",
+    "route_config": {
+      "virtual_hosts": [
+            {
+              "name": "vp0_grpc",
+              "domains": [
+                "*"
+              ],
+              "routes": [
+                {
+                  "timeout_ms": 0,
+                  "prefix": "/",
+                  "headers": [
+                    {"name": "content-type", "value": "application/grpc"}
+                  ],
+                  "cluster": "vp0_grpc"
+                }
+              ]
+            }
+      ]
+    },
+    "filters": [
+      {
+        "type": "decoder",
+        "name": "router",
+        "config": {}
+      }
+    ]
+  }
+}
+]
+},
+
+{
+  "address": "tcp://0.0.0.0:9003",
+  "filters": [
+    {
+      "type": "read",
+      "name": "http_connection_manager",
+      "config": {
+        "generate_request_id": true,
+        "add_user_agent": true,
+        "tracing": {
+          "operation_name": "egress"
+        },
+        "codec_type": "auto",
+        "stat_prefix": "egress_http",
+        "route_config": {
+          "virtual_hosts": [
+                {
+                  "name": "vp0_peerevent",
+                  "domains": [
+                    "*"
+                  ],
+                  "routes": [
+                    {
+                      "timeout_ms": 0,
+                      "prefix": "/",
+                      "headers": [
+                        {"name": "content-type", "value": "application/grpc"}
+                      ],
+                      "cluster": "vp0_peerevent"
+                    }
+                  ]
+                }
+          ]
+        },
+        "filters": [
+          {
+            "type": "decoder",
+            "name": "router",
+            "config": {}
+          }
+        ]
+      }
+    }
+  ]
+},
+
+{
+  "address": "tcp://0.0.0.0:10000",
+  "filters": [
+    {
+      "type": "read",
+      "name": "http_connection_manager",
+      "config": {
+        "generate_request_id": true,
+        "add_user_agent": true,
+        "tracing": {
+          "operation_name": "egress"
+        },
+        "codec_type": "auto",
+        "stat_prefix": "egress_http",
+        "route_config": {
+          "virtual_hosts": [
+            {
+              "name": "vp2",
+              "domains": ["*"],
+              "routes": [
+                {
+                  "timeout_ms": 0,
+                  "prefix": "/",
+                  "cluster": "vp2_rest"
+                }
+              ]
+            }
+          ]
+        },
+        "filters": [
+          {
+            "type": "decoder",
+            "name": "router",
+            "config": {}
+          }
+        ]
+      }
+    }
+  ]
+},
+{
+"address": "tcp://0.0.0.0:10001",
+"filters": [
+
+{
+"type": "read",
+"name": "http_connection_manager",
+"config": {
+  "generate_request_id": true,
+  "add_user_agent": true,
+ "tracing": {
+   "operation_name": "egress"
+ },
+"codec_type": "auto",
+"stat_prefix": "egress_http",
+"route_config": {
+  "virtual_hosts": [
+        {
+          "name": "vp2_grpc",
+          "domains": [
+            "*"
+          ],
+          "routes": [
+            {
+              "timeout_ms": 0,
+              "prefix": "/",
+              "headers": [
+                {"name": "content-type", "value": "application/grpc"}
+              ],
+              "cluster": "vp2_grpc"
+            }
+          ]
+        }
+  ]
+},
+"filters": [
+  {
+    "type": "decoder",
+    "name": "router",
+    "config": {}
+  }
+]
+}
+}
+]
+},
+
+{
+"address": "tcp://0.0.0.0:10003",
+"filters": [
+{
+  "type": "read",
+  "name": "http_connection_manager",
+  "config": {
+    "generate_request_id": true,
+    "add_user_agent": true,
+    "tracing": {
+      "operation_name": "egress"
+    },
+    "codec_type": "auto",
+    "stat_prefix": "egress_http",
+    "route_config": {
+      "virtual_hosts": [
+            {
+              "name": "vp2_peerevent",
+              "domains": [
+                "*"
+              ],
+              "routes": [
+                {
+                  "timeout_ms": 0,
+                  "prefix": "/",
+                  "headers": [
+                    {"name": "content-type", "value": "application/grpc"}
+                  ],
+                  "cluster": "vp2_peerevent"
+                }
+              ]
+            }
+      ]
+    },
+    "filters": [
+      {
+        "type": "decoder",
+        "name": "router",
+        "config": {}
+      }
+    ]
+  }
+}
+]
+},
+
+{
+  "address": "tcp://0.0.0.0:12000",
+  "filters": [
+    {
+      "type": "read",
+      "name": "http_connection_manager",
+      "config": {
+        "generate_request_id": true,
+        "add_user_agent": true,
+        "tracing": {
+          "operation_name": "egress"
+        },
+        "codec_type": "auto",
+        "stat_prefix": "egress_http",
+        "route_config": {
+          "virtual_hosts": [
+            {
+              "name": "vp1",
+              "domains": ["*"],
+              "routes": [
+                {
+                  "timeout_ms": 0,
+                  "prefix": "/",
+                  "cluster": "vp1_rest"
+                }
+              ]
+            }
+          ]
+        },
+        "filters": [
+          {
+            "type": "decoder",
+            "name": "router",
+            "config": {}
+          }
+        ]
+      }
+    }
+  ]
+},
+{
+"address": "tcp://0.0.0.0:12001",
+"filters": [
+
+{
+"type": "read",
+"name": "http_connection_manager",
+"config": {
+  "generate_request_id": true,
+  "add_user_agent": true,
+ "tracing": {
+   "operation_name": "egress"
+ },
+"codec_type": "auto",
+"stat_prefix": "egress_http",
+"route_config": {
+  "virtual_hosts": [
+        {
+          "name": "vp1_grpc",
+          "domains": [
+            "*"
+          ],
+          "routes": [
+            {
+              "timeout_ms": 0,
+              "prefix": "/",
+              "headers": [
+                {"name": "content-type", "value": "application/grpc"}
+              ],
+              "cluster": "vp1_grpc"
+            }
+          ]
+        }
+  ]
+},
+"filters": [
+  {
+    "type": "decoder",
+    "name": "router",
+    "config": {}
+  }
+]
+}
+}
+]
+},
+
+{
+"address": "tcp://0.0.0.0:12003",
+"filters": [
+{
+  "type": "read",
+  "name": "http_connection_manager",
+  "config": {
+    "generate_request_id": true,
+    "add_user_agent": true,
+    "tracing": {
+      "operation_name": "egress"
+    },
+    "codec_type": "auto",
+    "stat_prefix": "egress_http",
+    "route_config": {
+      "virtual_hosts": [
+            {
+              "name": "vp1_peerevent",
+              "domains": [
+                "*"
+              ],
+              "routes": [
+                {
+                  "timeout_ms": 0,
+                  "prefix": "/",
+                  "headers": [
+                    {"name": "content-type", "value": "application/grpc"}
+                  ],
+                  "cluster": "vp1_peerevent"
+                }
+              ]
+            }
+      ]
+    },
+    "filters": [
+      {
+        "type": "decoder",
+        "name": "router",
+        "config": {}
+      }
+    ]
+  }
+}
+]
+},
+
+
+
+
+
+
+{
+  "address": "tcp://0.0.0.0:11000",
+  "filters": [
+    {
+      "type": "read",
+      "name": "http_connection_manager",
+      "config": {
+        "generate_request_id": true,
+        "add_user_agent": true,
+        "tracing": {
+          "operation_name": "egress"
+        },
+        "codec_type": "auto",
+        "stat_prefix": "egress_http",
+        "route_config": {
+          "virtual_hosts": [
+            {
+              "name": "vp3",
+              "domains": ["*"],
+              "routes": [
+                {
+                  "timeout_ms": 0,
+                  "prefix": "/",
+                  "cluster": "vp3_rest"
+                }
+              ]
+            }
+          ]
+        },
+        "filters": [
+          {
+            "type": "decoder",
+            "name": "router",
+            "config": {}
+          }
+        ]
+      }
+    }
+  ]
+},
+{
+"address": "tcp://0.0.0.0:11001",
+"filters": [
+
+{
+"type": "read",
+"name": "http_connection_manager",
+"config": {
+ "generate_request_id": true,
+ "add_user_agent": true,
+ "tracing": {
+   "operation_name": "egress"
+ },
+"codec_type": "auto",
+"stat_prefix": "egress_http",
+"route_config": {
+  "virtual_hosts": [
+        {
+          "name": "vp3_grpc",
+          "domains": [
+            "*"
+          ],
+          "routes": [
+            {
+              "timeout_ms": 0,
+              "prefix": "/",
+              "headers": [
+                {"name": "content-type", "value": "application/grpc"}
+              ],
+              "cluster": "vp3_grpc"
+            }
+          ]
+        }
+  ]
+},
+"filters": [
+  {
+    "type": "decoder",
+    "name": "router",
+    "config": {}
+  }
+]
+}
+}
+]
+},
+
+{
+"address": "tcp://0.0.0.0:11003",
+"filters": [
+{
+  "type": "read",
+  "name": "http_connection_manager",
+  "config": {
+    "generate_request_id": true,
+    "add_user_agent": true,
+    "tracing": {
+      "operation_name": "egress"
+    },
+    "codec_type": "auto",
+    "stat_prefix": "egress_http",
+    "route_config": {
+      "virtual_hosts": [
+            {
+              "name": "vp3_peerevent",
+              "domains": [
+                "*"
+              ],
+              "routes": [
+                {
+                  "timeout_ms": 0,
+                  "prefix": "/",
+                  "headers": [
+                    {"name": "content-type", "value": "application/grpc"}
+                  ],
+                  "cluster": "vp3_peerevent"
+                }
+              ]
+            }
+      ]
+    },
+    "filters": [
+      {
+        "type": "decoder",
+        "name": "router",
+        "config": {}
+      }
+    ]
+  }
+}
+]
+},
+
+
+
+
+
+{
+  "address": "tcp://0.0.0.0:9004",
+  "filters": [
+    {
+      "type": "read",
+      "name": "http_connection_manager",
+      "config": {
+        "generate_request_id": true,
+        "add_user_agent": true,
+        "tracing": {
+          "operation_name": "egress"
+        },
+        "codec_type": "auto",
+        "stat_prefix": "egress_http",
+        "route_config": {
+          "virtual_hosts": [
+                {
+                  "name": "membersrvc",
+                  "domains": [
+                    "*"
+                  ],
+                  "routes": [
+                    {
+                      "timeout_ms": 0,
+                      "prefix": "/",
+                      "headers": [
+                        {"name": "content-type", "value": "application/grpc"}
+                      ],
+                      "cluster": "membersrvc"
+                    }
+                  ]
+                }
+          ]
+        },
+        "filters": [
+          {
+            "type": "decoder",
+            "name": "router",
+            "config": {}
+          }
+        ]
+      }
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+  ],
+  "tracing": {
+    "http": {
+      "driver": {
+        "type": "zipkin",
+        "config": {
+          "collector_cluster": "zipkin",
+          "collector_endpoint": "/api/v1/spans"
+        }
+      }
+    }
+  },
+  "admin": {
+    "access_log_path": "/dev/null",
+    "address": "tcp://0.0.0.0:8001"
+  },
+  "cluster_manager": {
+    "clusters": [
+
+      {
+        "name": "vp1_rest",
+        "connect_timeout_ms": 250,
+        "type": "strict_dns",
+        "lb_type": "round_robin",
+        "hosts": [
+          {
+            "url": "tcp://vp1:37050"
+          }
+        ]
+      },
+
+      {
+        "name": "vp1_grpc",
+        "connect_timeout_ms": 250,
+        "type": "strict_dns",
+        "lb_type": "round_robin",
+        "hosts": [
+          {
+            "url": "tcp://vp1:37051"
+          }
+        ]
+      },
+
+
+      {
+      "name": "vp1_peerevent",
+      "connect_timeout_ms": 250,
+      "type": "strict_dns",
+      "lb_type": "round_robin",
+      "hosts": [
+      {
+      "url": "tcp://vp1:37053"
+      }
+      ]
+      },
+
+      {
+        "name": "vp0_rest",
+        "connect_timeout_ms": 250,
+        "type": "strict_dns",
+        "lb_type": "round_robin",
+        "hosts": [
+          {
+            "url": "tcp://vp0:37050"
+          }
+        ]
+      },
+
+      {
+        "name": "vp0_grpc",
+        "connect_timeout_ms": 250,
+        "type": "strict_dns",
+        "lb_type": "round_robin",
+        "hosts": [
+          {
+            "url": "tcp://vp0:37051"
+          }
+        ]
+      },
+
+
+{
+  "name": "vp0_peerevent",
+  "connect_timeout_ms": 250,
+  "type": "strict_dns",
+  "lb_type": "round_robin",
+  "hosts": [
+    {
+      "url": "tcp://vp0:37053"
+    }
+  ]
+},
+
+
+
+{
+  "name": "membersrvc",
+  "connect_timeout_ms": 250,
+  "type": "strict_dns",
+  "lb_type": "round_robin",
+  "hosts": [
+    {
+      "url": "tcp://membersrvc:37054"
+    }
+  ]
+},
+
+{
+  "name": "vp2_rest",
+  "connect_timeout_ms": 250,
+  "type": "strict_dns",
+  "lb_type": "round_robin",
+  "hosts": [
+    {
+      "url": "tcp://vp2:37050"
+    }
+  ]
+},
+
+{
+  "name": "vp2_grpc",
+  "connect_timeout_ms": 250,
+  "type": "strict_dns",
+  "lb_type": "round_robin",
+  "hosts": [
+    {
+      "url": "tcp://vp2:37051"
+    }
+  ]
+},
+
+
+{
+"name": "vp2_peerevent",
+"connect_timeout_ms": 250,
+"type": "strict_dns",
+"lb_type": "round_robin",
+"hosts": [
+{
+"url": "tcp://vp2:37053"
+}
+]
+},
+
+{
+  "name": "vp3_rest",
+  "connect_timeout_ms": 250,
+  "type": "strict_dns",
+  "lb_type": "round_robin",
+  "hosts": [
+    {
+      "url": "tcp://vp3:37050"
+    }
+  ]
+},
+
+{
+  "name": "vp3_grpc",
+  "connect_timeout_ms": 250,
+  "type": "strict_dns",
+  "lb_type": "round_robin",
+  "hosts": [
+    {
+      "url": "tcp://vp3:37051"
+    }
+  ]
+},
+
+
+{
+"name": "vp3_peerevent",
+"connect_timeout_ms": 250,
+"type": "strict_dns",
+"lb_type": "round_robin",
+"hosts": [
+{
+"url": "tcp://vp3:37053"
+}
+]
+},
+
+
+      {
+        "name": "zipkin",
+        "connect_timeout_ms": 1000,
+        "type": "strict_dns",
+        "lb_type": "round_robin",
+        "hosts": [
+          {
+            "url": "tcp://zipkin:9411"
+          }
+        ]
+      }
+    ]
+  }
+}
